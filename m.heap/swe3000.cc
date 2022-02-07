@@ -15,15 +15,26 @@ ll solve() {
     ll result = 0;
     aq.push(A);
     for (int i = 0; i < N; i++) {
-        int x, y; scanf("%d %d", &x, &y);
-        aq.push(x);
-        aq.push(y);
-
-        while (!bq.empty()) { aq.push(bq.top()); bq.pop(); }
-
-        while (bq.size()+1 != aq.size()) {
-            bq.push(aq.top()); aq.pop();
+        int x[2]; scanf("%d %d", &x[0], &x[1]);
+        
+        for (int j = 0; j < 2; j++) {
+            int v = x[j];
+            if (aq.size() == bq.size()) {
+                if (bq.top() < v) {
+                    aq.push(bq.top()); bq.pop();
+                    bq.push(v);
+                } else {
+                    aq.push(v);
+                }
+            }
+            else if (aq.top() > v) {
+                bq.push(aq.top()); aq.pop();
+                aq.push(v);
+            } else {
+                bq.push(v);
+            }
         }
+        
         result = (result+aq.top()) % 20171109;
     }
     return result;
