@@ -1,34 +1,28 @@
-from itertools import permutations
 import sys
 input = sys.stdin.readline
 
 N, M = list(map(int, input().split()))
 arr = sorted(list(map(int, input().split())))
 
-for item in permutations(arr, M):
-    print(' '.join([ str(i) for i in item]))
-
-
-def permu(arr, r=None):
-    pool = tuple(arr)
-    n = len(pool)
-    r = n if r is None else r
-
-    if r > n:
-        return
-    indices = list(range(n))
-    cycles = list(range(n, n-r, -1))
-    yield tuple(pool[i] for i in indices[:r])
-    while n:
-        for i in reversed(range(r)):
-            cycles[i] -= 1
-            if cycles[i] == 0:
-                indices[i:] = indices[i+1:] + indices[i:i+1]
-                cycles[i] = n-i
-            else:
-                j = cycles[i]
-                indices[i], indices[-j] = indices[-j], indices[i]
-                yield tuple(pool[i] for i in indices[:r])
-                break
-        else:
+def permutation(l, r):
+    answer = []
+    def dfs(n, m, ans=[], visit=set()):
+        if m == 0:
+            answer.append(ans[:])
             return
+        
+        for next in range(n):
+            if next in visit: continue
+            visit.add(next)
+
+            ans.append(next)
+            dfs(n, m-1, ans, visit)
+
+            ans.pop()
+            visit.remove(next)
+
+    dfs(len(l), r)
+    for ans in answer:
+        print(' '.join([str(l[i]) for i in ans]))
+
+permutation(arr, M)
