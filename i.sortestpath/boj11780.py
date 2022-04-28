@@ -13,16 +13,18 @@ for _ in range(m):
         jido[a-1][b-1] = min(jido[a-1][b-1], c)
         citys[a-1][b-1] = [a, b]
 
-for i in range(n):
-    jido[i][i] = 0
-    citys[i][i] = 1
-
 for k in range(n):
     for i in range(n):
         for j in range(n):
+            if i == j: continue
             if jido[i][j] > jido[i][k] + jido[k][j]:
                 jido[i][j] = jido[i][k] + jido[k][j]
                 citys[i][j] = citys[i][k] + citys[k][j][1:]
+
+for i in range(n):
+    for j in range(n):
+        if jido[i][j] == 9876543210:
+            jido[i][j] = 0
 
 for row in jido:
     print(' '.join([str(i) for i in row]))
