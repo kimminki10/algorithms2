@@ -2,7 +2,6 @@ import sys
 input = sys.stdin.readline
 
 
-# 1은 가로 0은 세로
 def calc_score(mask, jido):
     check = 0
     score = 0
@@ -14,23 +13,20 @@ def calc_score(mask, jido):
         if mask & (1 << i):
             j = i + 1
             x = i // M
-            while j < (x + 1) * M:
-                if mask & (1 << j):
-                    check |= (1 << j)
-                    cur_score += jido[j // M][j % M]
-                else: break
+            while j < (x + 1) * M and mask & (1 << j):
+                check |= (1 << j)
+                cur_score += jido[j // M][j % M]
                 j += 1
         else:
             j = i + M
-            while j < N * M:
-                if (mask & (1 << j)) == 0:
-                    check |= (1 << j)
-                    cur_score += jido[j // M][j % M]
-                else: break
+            while j < N * M and (mask & (1 << j)) == 0:
+                check |= (1 << j)
+                cur_score += jido[j // M][j % M]
                 j += M    
         score += int(cur_score)
 
     return score
+    
 
 def solve(N, M, jido):
     size = 1 << (N * M)
