@@ -10,19 +10,11 @@ for _ in range(N):
     T.append(t)
     P.append(p)
 
-
-result = 0
-def dfs(idx, profit):
-    if idx > N: return
-    global result
-    result = max(profit, result)
-    if idx >= N: return
-
-    # choose
-    dfs(idx+T[idx], profit+P[idx])
-    # not choose
-    dfs(idx+1, profit)
+dp = [ 0 ] * 20
+for i in range(N):
+    if i + T[i] <= N and dp[i] + P[i] > dp[i+T[i]]:
+        dp[i+T[i]] = dp[i] + P[i]
+    dp[i+1] = max(dp[i], dp[i+1])
 
 
-dfs(0, 0)
-print(result)
+print(dp[N])
