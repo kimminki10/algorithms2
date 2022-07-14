@@ -3,25 +3,12 @@ input = sys.stdin.readline
 
 N = int(input().rstrip())
 arr = list(map(int, input().split()))
-last = set(range(1, sum(arr)+2))
 
-mask_end = 1 << N
+arr.sort()
 
-def subset_sum(mask):
-    result = 0
+p = 0
+for i in range(N):
+    if p + 1 < arr[i]: break
+    p += arr[i]
 
-    i = 0
-    while mask:
-        if mask & 1:
-            result += arr[i]
-        i += 1
-        mask = mask >> 1
-    return result
-            
-
-for mask in range(1, mask_end):
-    s = subset_sum(mask)
-    if s in last:
-        last.remove(s)
-
-print(list(last)[0])
+print(p+1)
