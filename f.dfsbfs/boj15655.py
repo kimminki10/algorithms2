@@ -2,26 +2,18 @@ import sys
 input = sys.stdin.readline
 
 N, M = map(int, input().split())
-arr = list(map(int, input().split()))
-arr.sort()
+arr = sorted(map(int, input().split()))
+visit = [0] * N
 
+def dfs(c, l):
+    if len(l) == M:
+        print(' '.join([str(arr[i]) for i in l]))
+        return
 
-def combi(arr, m):
+    for i in range(c, N):
+        if visit[i]: continue
+        visit[i] = 1
+        dfs(i, l[:]+[i])
+        visit[i] = 0
 
-    def dfs(n, m, ans):
-        if m == 0:
-            print(' '.join([str(arr[i-1]) for i in ans]))
-            return
-        
-        if ans:
-            small = ans[-1] + 1
-        else:
-            small = 1
-
-        for next in range(small, n+1):
-            ans.append(next)
-            dfs(n, m-1, ans)
-            ans.pop()
-    dfs(len(arr), m, [])
-
-combi(arr, M)
+dfs(0, [])
