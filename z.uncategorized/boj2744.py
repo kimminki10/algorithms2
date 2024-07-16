@@ -1,0 +1,1 @@
+print("".join([c.capitalize() if c.islower() else c.lower() for c in input().strip()]))
