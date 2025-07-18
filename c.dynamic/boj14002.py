@@ -1,28 +1,30 @@
+from bisect import bisect_left
 import sys
 input = sys.stdin.readline
 
 N = int(input())
-A = list(map(int, input().split()))
+arr = list(map(int,input().split()))
 
 def lis(arr):
-    d = [ 0 ] * N
-    l = [[] for _ in range(N)]
+    brr = []
+    l = []
+    for v in arr:
+        if not brr or brr[-1] < v:
+            l.append(len(brr))
+            brr.append(v)
+        else:
+            i = bisect_left(brr, v)
+            l.append(i)
+            brr[i] = v
+    bi = len(brr)-1
+    ans = [0] * len(brr)
+    for i in range(N-1,-1,-1):
+        if l[i] == bi:
+            ans[l[i]] = arr[i]
+            bi -= 1
+    return ans
 
-    for i, v in enumerate(arr):
-        d[i] = 1
-        l[i].append(v)
-        for j in range(i):
-            if arr[j] < v and d[i] < d[j] + 1:
-                l[i].clear()
-                l[i] = l[j][:]
-                l[i].append(arr[i])
-                d[i] = d[j]+1
-    result = l[0]
-    for i in l:
-        if len(result) < len(i):
-            result = i
-    return result
 
-l = lis(A)
-print(len(l))
-print(' '.join([str(i) for i in l]))
+ans = lis(arr)
+print(len(ans))
+print(' '.join(map(str, ans)))
