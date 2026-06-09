@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { PageHero, Section, Badge } from "@/components/ui";
-import { APP_TYPES, APP_STATUS, type AppType, type AppStatus } from "@/lib/constants";
+import { APP_TYPES, APP_STATUS, facilityName, slotLabel, type AppType, type AppStatus } from "@/lib/constants";
 
 export const metadata = { title: "마이페이지" };
 
@@ -34,6 +34,11 @@ export default async function MyPage() {
                 <span className="ml-auto text-sm text-slate-400">{new Date(a.createdAt).toLocaleDateString("ko-KR")}</span>
               </div>
               <h3 className="mt-3 font-bold text-slate-900">{a.title}</h3>
+              {a.type === "RENTAL" && (
+                <p className="mt-1 text-sm font-semibold text-brand-600">
+                  {facilityName(a.facility)} · {a.desiredDate} · {slotLabel(a.timeSlot)}
+                </p>
+              )}
               <p className="mt-1 line-clamp-2 text-sm text-slate-500">{a.content}</p>
               {a.adminNote && (
                 <p className="mt-3 rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">

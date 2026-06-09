@@ -42,7 +42,9 @@ model Application {
   applicantName String
   phone         String
   email         String
-  desiredDate   String?
+  desiredDate   String?  // 대관 희망 일자 (YYYY-MM-DD)
+  facility      String?  // 대관 시설 id
+  timeSlot      String?  // 대관 시간대 id (AM | PM | EV)
   content       String
   status        String   @default("PENDING") // PENDING | APPROVED | REJECTED
   adminNote     String?

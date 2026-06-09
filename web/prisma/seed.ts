@@ -42,7 +42,8 @@ async function main() {
 
   await prisma.application.createMany({
     data: [
-      { type: "RENTAL", title: "동아리 정기모임 세미나실 대관", applicantName: "홍길동", phone: "010-1234-5678", email: "user@test.kr", desiredDate: "2026-06-20", content: "주말 동아리 정기모임을 위해 세미나실을 대관하고자 합니다. 20명 내외입니다.", status: "PENDING", userId: member.id },
+      { type: "RENTAL", title: "동아리 정기모임 세미나실 대관", applicantName: "홍길동", phone: "010-1234-5678", email: "user@test.kr", desiredDate: "2026-06-20", facility: "seminar", timeSlot: "PM", content: "주말 동아리 정기모임을 위해 세미나실을 대관하고자 합니다. 20명 내외입니다.", status: "PENDING", userId: member.id },
+      { type: "RENTAL", title: "지역 합창단 발표회 대강당 대관", applicantName: "이수진", phone: "010-7777-8888", email: "lee@test.kr", desiredDate: "2026-06-27", facility: "hall", timeSlot: "EV", content: "지역 합창단 정기 발표회를 위한 대강당 대관입니다.", status: "APPROVED" },
       { type: "PROGRAM", title: "여름 코딩교실 참가 신청", applicantName: "김영희", phone: "010-2222-3333", email: "kim@test.kr", content: "초등학생 자녀의 코딩교실 참가를 신청합니다.", status: "APPROVED" },
       { type: "BUSINESS", title: "청년 창업 지원사업 신청", applicantName: "박철수", phone: "010-4444-5555", email: "park@test.kr", content: "청년 창업 지원사업에 지원하고자 합니다. 사업계획서는 별도 제출 예정입니다.", status: "PENDING" },
     ],

@@ -1,19 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHero, Section, Button, Field } from "@/components/ui";
-import { APP_TYPES, type AppType } from "@/lib/constants";
+import { APP_TYPES, ACTIVE_BOOKING_STATUS, type AppType } from "@/lib/constants";
 import { getSession } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { submitApplication } from "../actions";
+import RentalForm from "@/components/RentalForm";
 
 export default async function ApplyFormPage({
   params,
   searchParams,
 }: {
   params: Promise<{ type: string }>;
-  searchParams: Promise<{ submitted?: string }>;
+  searchParams: Promise<{ submitted?: string; error?: string }>;
 }) {
   const { type } = await params;
-  const { submitted } = await searchParams;
+  const { submitted, error } = await searchParams;
   const key = type.toUpperCase() as AppType;
   if (!(key in APP_TYPES)) notFound();
 
@@ -42,6 +44,36 @@ export default async function ApplyFormPage({
     );
   }
 
+  const errorMsg =
+    error === "conflict"
+      ? "선택하신 시설·날짜·시간대는 방금 다른 신청자가 예약했습니다. 다른 시간대를 선택해 주세요."
+      : error === "incomplete"
+      ? "시설·날짜·시간대를 모두 선택해 주세요."
+      : null;
+
+  // 대관: 달력 기반 예약 폼
+  if (key === "RENTAL") {
+    const active = await prisma.application.findMany({
+      where: { type: "RENTAL", status: { in: ACTIVE_BOOKING_STATUS } },
+      select: { facility: true, desiredDate: true, timeSlot: true },
+    });
+    return (
+      <>
+        <PageHero crumb="APPLY" title={meta.label} subtitle="시설과 날짜·시간대를 선택하면 예약 가능 여부가 실시간으로 표시됩니다." />
+        <Section className="max-w-3xl">
+          <Link href="/apply" className="text-sm font-bold text-brand-600 hover:underline">← 신청 유형 선택</Link>
+          {errorMsg && (
+            <p className="mt-4 rounded-xl bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-600">{errorMsg}</p>
+          )}
+          <div className="mt-5">
+            <RentalForm bookings={active} defaultName={user?.name} defaultEmail={user?.email} />
+          </div>
+        </Section>
+      </>
+    );
+  }
+
+  // 프로그램·사업: 기본 폼
   return (
     <>
       <PageHero crumb="APPLY" title={meta.label} subtitle={meta.desc} />
@@ -58,10 +90,6 @@ export default async function ApplyFormPage({
             <Field label="연락처" name="phone" required placeholder="010-0000-0000" />
           </div>
           <Field label="이메일" name="email" type="email" required defaultValue={user?.email} />
-
-          {key === "RENTAL" && (
-            <Field label="희망 일자" name="desiredDate" type="date" required />
-          )}
 
           <Field
             label="상세 내용"

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { APP_TYPES, APP_STATUS, type AppType, type AppStatus } from "@/lib/constants";
+import { APP_TYPES, APP_STATUS, facilityName, slotLabel, type AppType, type AppStatus } from "@/lib/constants";
 import { updateApplicationStatus } from "../actions";
 
 export const metadata = { title: "신청 관리" };
@@ -51,13 +51,17 @@ export default async function AdminApplications({
             </div>
 
             <h3 className="mt-3 font-bold text-slate-900">{a.title}</h3>
-            <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{a.content}</p>
+            {a.type === "RENTAL" && (
+              <p className="mt-1 inline-block rounded-lg bg-brand-50 px-3 py-1 text-sm font-semibold text-brand-700">
+                🏛️ {facilityName(a.facility)} · {a.desiredDate} · {slotLabel(a.timeSlot)}
+              </p>
+            )}
+            <p className="mt-2 whitespace-pre-wrap text-sm text-slate-600">{a.content}</p>
 
             <dl className="mt-3 grid gap-x-6 gap-y-1 text-sm text-slate-500 sm:grid-cols-2">
               <div><dt className="inline font-semibold">신청자: </dt><dd className="inline">{a.applicantName}</dd></div>
               <div><dt className="inline font-semibold">연락처: </dt><dd className="inline">{a.phone}</dd></div>
               <div><dt className="inline font-semibold">이메일: </dt><dd className="inline">{a.email}</dd></div>
-              {a.desiredDate && <div><dt className="inline font-semibold">희망일자: </dt><dd className="inline">{a.desiredDate}</dd></div>}
             </dl>
 
             <form action={updateApplicationStatus} className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:items-center">
