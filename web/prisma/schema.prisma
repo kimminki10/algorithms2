@@ -1,0 +1,61 @@
+// Prisma schema — 개발/데모용 SQLite. 배포 시 provider 를 postgresql 로 교체하면 Supabase 등으로 이전 가능.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  role      String   @default("USER") // USER | ADMIN
+  createdAt DateTime @default(now())
+
+  notices      Notice[]
+  applications Application[]
+}
+
+model Notice {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  pinned    Boolean  @default(false)
+  views     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author   User?   @relation(fields: [authorId], references: [id])
+  authorId String?
+}
+
+model Application {
+  id            String   @id @default(cuid())
+  type          String   // RENTAL | PROGRAM | BUSINESS
+  title         String
+  applicantName String
+  phone         String
+  email         String
+  desiredDate   String?
+  content       String
+  status        String   @default("PENDING") // PENDING | APPROVED | REJECTED
+  adminNote     String?
+  createdAt     DateTime @default(now())
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+}
+
+model Faq {
+  id       String @id @default(cuid())
+  category String @default("일반")
+  question String
+  answer   String
+  sort     Int    @default(0)
+}
